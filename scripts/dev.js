@@ -14,6 +14,7 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
+const compileMain = spawnSync('npx', [
 // Use npx tsc with the project config to avoid TS5112
 const compileMain = spawnSync('npx', [
   'tsc',
