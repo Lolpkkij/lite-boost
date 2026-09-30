@@ -1,4 +1,4 @@
-import { app, BrowserWindow, globalShortcut, ipcMain, systemPreferences, screen } from 'electron';
+import { app, BrowserWindow, globalShortcut, ipcMain, screen } from 'electron';
 import path from 'path';
 import { config } from 'dotenv';
 import { CHANNELS, type MemoryInfo, type CPUInfo, type GPUInfo } from '../shared/ipc';
