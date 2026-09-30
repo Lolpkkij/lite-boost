@@ -14,29 +14,20 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Try to use local tsc first, fallback to npx
-const tscPath = path.join(__dirname, '../node_modules/.bin/tsc');
-const tscArgs = [
+// Use npx tsc to compile the main process
+const compileMain = spawnSync('npx', [
+  'tsc',
   'src/main/index.ts',
   '--outDir', 'dist-electron/main',
   '--module', 'commonjs',
-  '--target', 'es6',
+  '--target', 'es2020',
   '--esModuleInterop',
-  '--skipLibCheck'
-];
-
-let compileMain;
-if (fs.existsSync(tscPath)) {
-  console.log('📦 Using local tsc...');
-  compileMain = spawnSync(tscPath, tscArgs, { shell: true, stdio: 'inherit' });
-} else {
-  console.log('📦 Using npx tsc...');
-  compileMain = spawnSync('npx', ['tsc', ...tscArgs], { shell: true, stdio: 'inherit' });
-}
+  '--skipLibCheck',
+  '--strictNullChecks'
+], { shell: true, stdio: 'inherit' });
 
 if (compileMain.status !== 0) {
   console.error('❌ Failed to compile main process. Please check your TypeScript errors.');
-  console.log('💡 Make sure you have run `npm install` to install dependencies.');
   process.exit(1);
 }
 
