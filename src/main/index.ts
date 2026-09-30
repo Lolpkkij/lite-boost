@@ -1,14 +1,12 @@
 import { app, BrowserWindow, globalShortcut, ipcMain, screen } from 'electron';
 import path from 'path';
 import { config } from 'dotenv';
-import { CHANNELS, type MemoryInfo, type CPUInfo, type GPUInfo } from '../shared/ipc';
+import { CHANNELS } from '../shared/ipc';
 import { MemoryService } from './services/memory';
 
 config();
 
 let mainWindow: BrowserWindow | null = null;
-let lastDatabaseFlush = 0;
-const FLUSH_INTERVAL = 1000; // 1 second
 let isAppVisible = true;
 let isMinimized = false;
 
@@ -44,11 +42,6 @@ function createWindow(): BrowserWindow {
       sandbox: true,
     },
     backgroundColor: '#1a1a2e',
-  });
-
-  // Frameless window controls
-  mainWindow.webContents.on('dom-ready', () => {
-    mainWindow?.setWindowButtonVisibility(false);
   });
 
   mainWindow.on('closed', () => {
@@ -95,7 +88,6 @@ app.disableHardwareAcceleration();
 
 // Launch browser window
 function startWindow() {
-  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = createWindow();
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 }
