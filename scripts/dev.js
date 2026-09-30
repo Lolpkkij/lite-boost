@@ -8,14 +8,12 @@ const __dirname = path.dirname(__filename);
 
 console.log('🛠️ Cleaning and compiling main process...');
 
-// Clean the output directory to avoid conflicts with previous builds
 const outputDir = path.join(__dirname, '../dist-electron');
 if (fs.existsSync(outputDir)) {
   fs.rmSync(outputDir, { recursive: true, force: true });
 }
 fs.mkdirSync(path.join(outputDir, 'main'), { recursive: true });
 
-// Use spawn for real-time output
 const compileMain = spawn('npx', [
   'tsc',
   '-p', 'tsconfig.json',
@@ -24,6 +22,7 @@ const compileMain = spawn('npx', [
   '--target', 'es2020',
   '--esModuleInterop',
   '--skipLibCheck',
+  '--noEmit', 'false'
 ], { shell: true });
 
 compileMain.stdout.on('data', (data) => {
