@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Activity, HardDrive, RefreshCcw, Trash2 } from 'lucide-react';
-import { Button } from '@components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/card';
-import { Progress } from '@components/ui/progress';
-import { cn } from '@lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 
 export function Memory() {
   const [usagePercent, setUsagePercent] = useState('--');
@@ -13,13 +13,11 @@ export function Memory() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleTrim = () => {
-    // TODO: Call trim API
     console.log('Trimming memory...');
   };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    // TODO: Call memory info API
     setTimeout(() => {
       setIsRefreshing(false);
     }, 500);
@@ -27,7 +25,6 @@ export function Memory() {
 
   return (
     <div className="flex size-full flex-col gap-4 p-6">
-      {/* Status Banner */}
       <Card className="border-blue-900/50 bg-gradient-to-r from-blue-900/10 to-purple-900/10 shadow-lg shadow-blue-900/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -40,7 +37,6 @@ export function Memory() {
         </CardHeader>
       </Card>
 
-      {/* Memory Usage Cards */}
       <div className="grid grid-cols-3 gap-4">
         {[
                   { label: 'Total Memory', value: totalMemory, icon: HardDrive, unit: 'GB', description: 'System RAM capacity' },
@@ -75,7 +71,6 @@ export function Memory() {
         })}
       </div>
 
-      {/* Main Progress Bar & Actions */}
       <Card className="border-gray-800 bg-[#15152b] shadow-lg shadow-black/50">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -139,7 +134,6 @@ export function Memory() {
         </CardContent>
       </Card>
 
-      {/* Info Card */}
       <Card className="border-gray-800 bg-[#15152b] shadow-lg shadow-black/50">
         <CardContent className="pt-6">
           <div className="space-y-2 text-sm text-gray-400">

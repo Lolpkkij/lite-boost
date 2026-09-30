@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { useState } from 'react';
 import { Settings, Bell, RefreshCcw, Target, Activity, Monitor, Shield, X } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/card';
-import { Button } from '@components/ui/button';
-import { Switch } from '@components/ui/switch';
-import { cn } from '@lib/utils';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
 
 export function SettingsTab() {
   const [trimEnabled, setTrimEnabled] = useState(false);
@@ -28,7 +27,6 @@ export function SettingsTab() {
       </Card>
 
       <div className="grid grid-cols-1 gap-4">
-        {/* Memory Settings */}
         <Card className="border-gray-800 bg-[#15152b] shadow-lg shadow-black/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -87,7 +85,6 @@ export function SettingsTab() {
           </CardContent>
         </Card>
 
-        {/* Display Settings */}
         <Card className="border-gray-800 bg-[#15152b] shadow-lg shadow-black/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -121,7 +118,6 @@ export function SettingsTab() {
           </CardContent>
         </Card>
 
-        {/* System Settings */}
         <Card className="border-gray-800 bg-[#15152b] shadow-lg shadow-black/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -154,7 +150,6 @@ export function SettingsTab() {
           </CardContent>
         </Card>
 
-        {/* Actions */}
         <Card className="border-gray-800 bg-[#15152b] shadow-lg shadow-black/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

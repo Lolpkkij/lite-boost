@@ -29,13 +29,13 @@ contextBridge.exposeInMainWorld('api', {
 
   // Channels - Available IPC channels
   channels: CHANNELS,
-}) as {
+} as unknown as {
   invoke: <T = void>(params: IPCInvokeParams) => Promise<IPCResponse<T>>;
   on: (params: IPCListenerParams) => void;
   once: (params: IPCListenerParams) => void;
   off: (channel: typeof CHANNELS[keyof typeof CHANNELS]) => void;
   channels: typeof CHANNELS;
-};
+});
 
 // Type augmentations for TypeScript
 declare global {

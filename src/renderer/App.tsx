@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { MemoryTab } from '@pages/Memory';
-import { CPUTab } from '@pages/CPU';
-import { GPUTab } from '@pages/GPU';
-import { SettingsTab } from '@pages/Settings';
-import { MainLayout } from '@components/MainLayout';
-import { Gauges } from '@components/Gauges';
-import { cn } from '@lib/utils';
+import { Memory } from '@/pages/Memory';
+import { CPUTab } from '@/pages/CPU';
+import { GPUTab } from '@/pages/GPU';
+import { SettingsTab } from '@/pages/Settings';
+import { MainLayout } from '@/components/MainLayout';
+import { Gauges } from '@/components/Gauges';
+import { cn } from '@/lib/utils';
 
 type TabValue = 'memory' | 'cpu' | 'gpu' | 'settings';
 
@@ -18,7 +18,7 @@ export function App() {
   return (
     <MainLayout
       activeTab={activeTab}
-      onTabChange={setActiveTab}
+      onTabChange={(tab) => setActiveTab(tab as TabValue)}
     >
       <Gauges
         ramPercent={ramPercent}
@@ -26,7 +26,7 @@ export function App() {
         gpuPercent={gpuPercent}
       />
       <div className="flex-1 overflow-auto">
-        {activeTab === 'memory' && <MemoryTab />}
+        {activeTab === 'memory' && <Memory />}
         {activeTab === 'cpu' && <CPUTab />}
         {activeTab === 'gpu' && <GPUTab />}
         {activeTab === 'settings' && <SettingsTab />}

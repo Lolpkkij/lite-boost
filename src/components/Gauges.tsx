@@ -1,6 +1,6 @@
 import { Gauge, Cpu, Video } from 'lucide-react';
-import { cn } from '@lib/utils';
-import { Progress } from '@components/ui/progress';
+import { cn } from '@/lib/utils';
+import { Progress } from '@/components/ui/progress';
 import { useEffect, useState } from 'react';
 
 interface GaugesProps {
@@ -15,7 +15,6 @@ export function Gauges({ ramPercent, cpuPercent, gpuPercent }: GaugesProps) {
   const [gpuValue, setGpuValue] = useState('--');
 
   useEffect(() => {
-    // Parse percentages for actual progress values
     if (ramPercent !== '--' && ramPercent !== '') {
       const parsed = parseFloat(ramPercent);
       if (!isNaN(parsed) && parsed <= 100) {
