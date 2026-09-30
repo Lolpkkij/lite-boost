@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Memory } from '@/pages/Memory';
+import Memory from '@/pages/Memory';
 import { CPUTab } from '@/pages/CPU';
 import { GPUTab } from '@/pages/GPU';
 import { SettingsTab } from '@/pages/Settings';
