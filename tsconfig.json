@@ -4,16 +4,40 @@
     "module": "commonjs",
     "lib": ["ES2020"],
     "outDir": "./dist-electron/main",
-    "rootDir": "./src/main",
-    "strict": false,
+    "rootDir": "./src",
+    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "declaration": false,
+    "declarationMap": false,
     "sourceMap": true,
-    "moduleResolution": "node"
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "allowJs": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "@": ["./src"],
+      "@components": ["./src/components"],
+      "@pages": ["./src/pages"],
+      "@hooks": ["./src/hooks"],
+      "@lib": ["./src/lib"],
+      "@shared": ["./src/shared"]
+    }
   },
-  "include": ["src/main/**/*"],
-  "exclude": ["node_modules", "dist", "src/renderer"]
+  "include": [
+    "src/main/**/*.ts",
+    "src/shared/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "dist-electron",
+    "src/renderer",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
 }

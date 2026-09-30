@@ -13,8 +13,6 @@ const memory_1 = require("./services/memory");
 (0, dotenv_1.config)();
 let mainWindow = null;
 exports.mainWindow = mainWindow;
-let lastDatabaseFlush = 0;
-const FLUSH_INTERVAL = 1000; // 1 second
 let isAppVisible = true;
 let isMinimized = false;
 // Initialize memory service
@@ -48,10 +46,6 @@ function createWindow() {
             sandbox: true,
         },
         backgroundColor: '#1a1a2e',
-    });
-    // Frameless window controls
-    mainWindow.webContents.on('dom-ready', () => {
-        mainWindow?.setWindowButtonVisibility(false);
     });
     mainWindow.on('closed', () => {
         exports.mainWindow = mainWindow = null;
@@ -91,7 +85,6 @@ function createWindow() {
 electron_1.app.disableHardwareAcceleration();
 // Launch browser window
 function startWindow() {
-    const { width, height } = electron_1.screen.getPrimaryDisplay().workAreaSize;
     exports.mainWindow = mainWindow = createWindow();
     mainWindow.loadFile(path_1.default.join(__dirname, '../renderer/index.html'));
 }
