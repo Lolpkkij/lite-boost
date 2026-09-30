@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Lightweight Windows desktop utility for monitoring and cleaning RAM, CPU, and GPU",
-  "main": "src/main/index.ts",
+  "main": "dist-electron/main/index.js",
   "author": "LiteBoost Team",
   "license": "MIT",
   "scripts": {
