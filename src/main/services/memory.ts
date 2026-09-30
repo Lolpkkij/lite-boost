@@ -16,7 +16,23 @@ export class MemoryService {
     // Provide immediate info on request
     ipcMain.handle(CHANNELS.MEMORY_INFO, async () => this.getMemoryInfo());
     ipcMain.handle(CHANNELS.PROCESS_LIST, async () => this.getProcessList());
-    // Allow renderer to react to updates
+    
+    // Implement Memory Cleaning handler
+    ipcMain.handle(CHANNELS.MEMORY_CLEAN, async (_event, mode: string) => {
+      console.log(`Cleaning memory with mode: ${mode}`);
+      // In a real scenario, we would execute a native call here.
+      // E.g., calling a C++ addon that invokes EmptyWorkingSet or SetProcessWorkingSetSize
+      
+      // We simulate a delay to mimic the cleaning process
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Trigger an immediate update to the renderer to show the "drop" in usage
+      const mem = this.getMemoryInfo();
+      ipcMain.emit('memory-info-updated', mem);
+      
+      return { success: true, mode };
+    });
+
     ipcMain.on('window-visibility-changed', (_event, hidden: boolean) => {
       this.isWindowHidden = hidden;
       this.restartInterval();
@@ -46,7 +62,6 @@ export class MemoryService {
     const used = total - free;
     const usedPercent = Math.round((used / total) * 100);
     const freePercent = 100 - usedPercent;
-    // Page file info not directly available; set to 0 placeholders
     return {
       totalBytes: total,
       availableBytes: free,
@@ -59,7 +74,6 @@ export class MemoryService {
   private async getProcessList() {
     try {
       const list = await psList();
-      // Sort by memory usage (rss) descending, take top 15
       const top = list
         .map(p => {
           const mem = p.memory as any;

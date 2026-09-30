@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import MemoryTab from '@/components/MemoryTab';
 import { ipcRenderer } from 'electron';
 import { CHANNELS, type MemoryInfo } from '@/shared/ipc';
+import { CPUTab } from '@/pages/CPU';
+import { GPUTab } from '@/pages/GPU';
+import { SettingsTab } from '@/pages/Settings';
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState('memory');
@@ -14,7 +17,6 @@ export default function Index() {
       setRamPercent(`${info.usedPercentage}`);
     };
     ipcRenderer.on('memory-info-updated', handleMemoryInfoUpdated);
-    // Initial fetch
     ipcRenderer.invoke(CHANNELS.MEMORY_INFO).then((info: MemoryInfo) => {
       setRamPercent(`${info.usedPercentage}`);
     });
@@ -28,12 +30,11 @@ export default function Index() {
       case 'memory':
         return <MemoryTab />;
       case 'cpu':
-        // placeholder cpu component
-        return <div>CPU Tab</div>;
+        return <CPUTab />;
       case 'gpu':
-        return <div>GPU Tab</div>;
+        return <GPUTab />;
       case 'settings':
-        return <div>Settings</div>;
+        return <SettingsTab />;
       default:
         return null;
     }
@@ -41,9 +42,10 @@ export default function Index() {
 
   return (
     <MainLayout activeTab={activeTab} onTabChange={setActiveTab}>
-      {/* Top RAM gauge */}
       <Gauges ramPercent={ramPercent} cpuPercent="--" gpuPercent="--" />
-      {renderTab()}
+      <div className="flex-1 overflow-auto">
+        {renderTab()}
+      </div>
     </MainLayout>
   );
 }

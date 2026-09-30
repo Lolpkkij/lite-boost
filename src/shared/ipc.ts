@@ -3,6 +3,7 @@ export const CHANNELS = {
   // Memory channels
   MEMORY_INFO: 'memory:info',
   MEMORY_TRIM: 'memory:trim',
+  MEMORY_CLEAN: 'memory:clean',
 
   // Process channels
   PROCESS_LIST: 'process:list',
