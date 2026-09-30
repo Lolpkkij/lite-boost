@@ -16,15 +16,14 @@
 
     /* Linting */
     "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitAny": false,
-    "noFallthroughCasesInSwitch": false,
-
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "noImplicitAny": false,
+        "noFallthroughCasesInSwitch": false,
+    
+        "paths": {
+          "@/*": ["./src/*"]
+        }
   },
   "include": ["src"]
 }

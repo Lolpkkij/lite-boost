@@ -1,5 +1,5 @@
 import { cn } from '@lib/utils';
-import { Menu, X } from 'lucide-react';
+import { Activity, Cpu, Settings, X } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@components/ui/button';
 
@@ -10,10 +10,10 @@ interface MainLayoutProps {
 }
 
 const tabs = [
-  { id: 'memory', label: 'Memory', icon: 'Memory' },
-  { id: 'cpu', label: 'CPU', icon: 'Cpu' },
-  { id: 'gpu', label: 'GPU', icon: 'Cpu' },
-  { id: 'settings', label: 'Settings', icon: 'Settings' },
+  { id: 'memory', label: 'Memory', icon: Activity },
+  { id: 'cpu', label: 'CPU', icon: Cpu },
+  { id: 'gpu', label: 'GPU', icon: Cpu }, // Using Cpu for GPU as well, or we could use Video if preferred
+  { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
 export function MainLayout({ activeTab, onTabChange, children }: MainLayoutProps) {
@@ -47,30 +47,30 @@ export function MainLayout({ activeTab, onTabChange, children }: MainLayoutProps
         {/* Navigation Tabs */}
         <nav className="flex flex-1 flex-col gap-1 p-2">
           {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200',
-                activeTab === tab.id
-                  ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-900/50'
-                  : 'hover:bg-gray-800 text-gray-400 hover:text-gray-200',
-                'group'
-              )}
-            >
-              <span className={cn('text-lg', activeTab === tab.id ? 'opacity-100' : 'opacity-60')}>
-                {tab.icon}
-              </span>
-              {sidebarOpen && (
-                <span className={cn(
-                  'whitespace-nowrap text-sm font-medium',
-                  activeTab === tab.id ? 'opacity-100' : 'opacity-60'
-                )}>
-                  {tab.label}
-                </span>
-              )}
-            </button>
-          ))}
+                      <button
+                        key={tab.id}
+                        onClick={() => onTabChange(tab.id)}
+                        className={cn(
+                          'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200',
+                          activeTab === tab.id
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-900/50'
+                            : 'hover:bg-gray-800 text-gray-400 hover:text-gray-200',
+                          'group'
+                        )}
+                      >
+                        <span className={cn('text-lg', activeTab === tab.id ? 'opacity-100' : 'opacity-60')}>
+                          {tab.icon}
+                        </span>
+                        {sidebarOpen && (
+                          <span className={cn(
+                            'whitespace-nowrap text-sm font-medium',
+                            activeTab === tab.id ? 'opacity-100' : 'opacity-60'
+                          )}>
+                            {tab.label}
+                          </span>
+                        )}
+                      </button>
+                    ))}
         </nav>
 
         {/* Close button (always visible) */}

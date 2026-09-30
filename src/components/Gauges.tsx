@@ -86,12 +86,12 @@ export function Gauges({ ramPercent, cpuPercent, gpuPercent }: GaugesProps) {
                   {gauge.label}
                 </span>
                 <span className={cn(
-                  'text-sm font-bold',
-                  percent >= 90 ? 'text-red-400' :
-                  percent >= 70 ? 'text-yellow-400' :
-                  pct >= 50 ? 'text-green-400' :
-                  'text-gray-300'
-                )}>
+                                  'text-sm font-bold',
+                                  percent >= 90 ? 'text-red-400' :
+                                  percent >= 70 ? 'text-yellow-400' :
+                                  percent >= 50 ? 'text-green-400' :
+                                  'text-gray-300'
+                                )}>
                   {gauge.value}
                 </span>
               </div>

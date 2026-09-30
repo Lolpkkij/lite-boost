@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useState } from 'react';
 import { Video, Activity, Zap, Monitor } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/card';
 import { Progress } from '@components/ui/progress';

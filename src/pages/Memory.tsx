@@ -1,4 +1,5 @@
-import { Memory, RefreshCcw, Trash2, HardDrive, Activity } from 'lucide-react';
+import { useState } from 'react';
+import { Activity, HardDrive, RefreshCcw, Trash2 } from 'lucide-react';
 import { Button } from '@components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/card';
 import { Progress } from '@components/ui/progress';
@@ -42,10 +43,10 @@ export function Memory() {
       {/* Memory Usage Cards */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Total Memory', value: totalMemory, icon: HardDrive, unit: 'GB', description: 'System RAM capacity' },
-          { label: 'Used Memory', value: usedMemory, icon: Trash2, unit: 'GB', description: 'Memory currently in use' },
-          { label: 'Available', value: availableMemory, icon: Memory, unit: 'GB', description: 'Free memory available' },
-        ].map((card) => {
+                  { label: 'Total Memory', value: totalMemory, icon: HardDrive, unit: 'GB', description: 'System RAM capacity' },
+                  { label: 'Used Memory', value: usedMemory, icon: Trash2, unit: 'GB', description: 'Memory currently in use' },
+                  { label: 'Available', value: availableMemory, icon: Activity, unit: 'GB', description: 'Free memory available' },
+                ].map((card) => {
           const Icon = card.icon;
           const displayValue = card.value === '--' ? '0' : card.value;
 

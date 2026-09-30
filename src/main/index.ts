@@ -28,11 +28,11 @@ if (!gotTheLock) {
 // Window management
 function createWindow(): BrowserWindow {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 620,
-    frameless: true,
-    transparent: false,
-    resizable: false,
+      width: 900,
+      height: 620,
+      frame: false,
+      transparent: false,
+      resizable: false,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,
@@ -60,18 +60,7 @@ function createWindow(): BrowserWindow {
     mainWindow?.showInactive();
   });
 
-  mainWindow.on('minimized', () => {
-    isMinimized = true;
-  });
-
-  mainWindow.on('restore', () => {
-    isMinimized = false;
-  });
-
-  // Window visibility detection - check if window is visible on screen
-  mainWindow.on('show', () => {
-    mainWindow?.blur();
-  });
+  // Window visibility detection - check if window is visible\n  mainWindow.on('enter-full-screen', () => {\n    isAppVisible = true;\n  });\n  mainWindow.on('leave-full-screen', () => {\n    isAppVisible = false;\n  });\n  mainWindow.on('enter-html-full-screen', () => {\n    isAppVisible = true;\n  });\n  mainWindow.on('leave-html-full-screen', () => {\n    isAppVisible = false;\n  });\n\n  // Start background timer for window visibility\n  setInterval(() => {\n    if (mainWindow && !mainWindow.isMinimized()) {\n      isAppVisible = true;\n    } else {\n      isAppVisible = false;\n    }\n  }, 1000);
 
   return mainWindow;
 }
@@ -97,8 +86,14 @@ app.whenReady().then(() => {
 
   // Register global shortcuts
   globalShortcut.register('CommandOrControl+Shift+M', () => {
-    mainWindow?.toggleMinimize();
-  });
+        if (mainWindow) {
+          if (mainWindow.isMinimized()) {
+            mainWindow.restore();
+          } else {
+            mainWindow.minimize();
+          }
+      }
+    });
 
   globalShortcut.register('CommandOrControl+Shift+X', () => {
     mainWindow?.close();
@@ -112,33 +107,39 @@ app.whenReady().then(() => {
   });
 
   ipcMain.handle(CHANNELS.WINDOW_SET_MINIMIZED, (_event, minimized: boolean) => {
-    if (mainWindow) {
-      if (minimized) {
-        mainWindow.minimize();
+      if (mainWindow) {
+        if (minimized) {
+          mainWindow.minimize();
+          isMinimized = true;
+        } else {
+          mainWindow.restore();
+          isMinimized = false;
+        }
       }
-    }
-  });
-
-  ipcMain.handle(CHANNELS.WINDOW_SET_MAXIMIZED, (_event, maximized: boolean) => {
-    if (mainWindow) {
-      if (maximized) {
-        mainWindow.maximize();
+    });
+  
+    ipcMain.handle(CHANNELS.WINDOW_SET_MAXIMIZED, (_event, maximized: boolean) => {
+      if (mainWindow) {
+        if (maximized) {
+          mainWindow.maximize();
+        } else {
+          mainWindow.unmaximize();
+        }
       }
-    }
-  });
+    });
 
   ipcMain.handle(CHANNELS.WINDOW_IS_MINIMIZED, (_event) => {
-    return isMinimized;
-  });
-
-  // Start background timer for window visibility
-  setInterval(() => {
-    if (mainWindow && mainWindow.isVisible()) {
-      isAppVisible = true;
-    } else {
-      isAppVisible = false;
-    }
-  }, 1000);
+      return isMinimized;
+    });
+  
+    // Start background timer for window visibility
+    setInterval(() => {
+      if (mainWindow && !mainWindow.isMinimized()) {
+        isAppVisible = true;
+      } else {
+        isAppVisible = false;
+      }
+    }, 1000);
 });
 
 app.on('will-quit', () => {
