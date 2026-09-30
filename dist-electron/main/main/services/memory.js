@@ -8,7 +8,7 @@ const electron_1 = require("electron");
 const ipc_1 = require("../../shared/ipc");
 const os_1 = __importDefault(require("os"));
 const ps_list_1 = __importDefault(require("ps-list"));
-const index_1 = require("../index");
+const window_1 = require("../window");
 class MemoryService {
     constructor() {
         this.intervalId = null;
@@ -17,19 +17,15 @@ class MemoryService {
         this.start();
     }
     setupIpcHandlers() {
-        // Provide immediate info on request
         electron_1.ipcMain.handle(ipc_1.CHANNELS.MEMORY_INFO, async () => this.getMemoryInfo());
         electron_1.ipcMain.handle(ipc_1.CHANNELS.PROCESS_LIST, async () => this.getProcessList());
-        // Implement Memory Cleaning handler
         electron_1.ipcMain.handle(ipc_1.CHANNELS.MEMORY_CLEAN, async (_event, mode) => {
             console.log(`Cleaning memory with mode: ${mode}`);
-            // In a real scenario, we would execute a native call here.
-            // We simulate a delay to mimic the cleaning process
             await new Promise(resolve => setTimeout(resolve, 800));
-            // Trigger an immediate update to the renderer
             const mem = this.getMemoryInfo();
-            if (index_1.mainWindow) {
-                index_1.mainWindow.webContents.send('memory-info-updated', mem);
+            const mainWindow = (0, window_1.getMainWindow)();
+            if (mainWindow) {
+                mainWindow.webContents.send('memory-info-updated', mem);
             }
             return { success: true, mode };
         });
@@ -46,14 +42,15 @@ class MemoryService {
             clearInterval(this.intervalId);
         const interval = this.isWindowHidden ? 10000 : 2000;
         this.intervalId = setInterval(() => {
-            // Emit updates for both memory and processes
             const mem = this.getMemoryInfo();
-            if (index_1.mainWindow) {
-                index_1.mainWindow.webContents.send('memory-info-updated', mem);
+            const mainWindow = (0, window_1.getMainWindow)();
+            if (mainWindow) {
+                mainWindow.webContents.send('memory-info-updated', mem);
             }
             this.getProcessList().then(list => {
-                if (index_1.mainWindow) {
-                    index_1.mainWindow.webContents.send('process-list-updated', list);
+                const mainWindow = (0, window_1.getMainWindow)();
+                if (mainWindow) {
+                    mainWindow.webContents.send('process-list-updated', list);
                 }
             });
         }, interval);
