@@ -14,10 +14,10 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Use npx tsc to compile the main process
+// Use npx tsc with the project config to avoid TS5112
 const compileMain = spawnSync('npx', [
   'tsc',
-  'src/main/index.ts',
+  '-p', 'tsconfig.json',
   '--outDir', 'dist-electron/main',
   '--module', 'commonjs',
   '--target', 'es2020',
