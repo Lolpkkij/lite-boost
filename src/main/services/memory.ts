@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import type { MemoryInfo } from '../shared/ipc';
+import { CHANNELS, type MemoryInfo } from '../../shared/ipc';
 import os from 'os';
 import psList from 'ps-list';
 
@@ -14,8 +14,8 @@ export class MemoryService {
 
   private setupIpcHandlers() {
     // Provide immediate info on request
-    ipcMain.handle('memory:info', async () => this.getMemoryInfo());
-    ipcMain.handle('process:list', async () => this.getProcessList());
+    ipcMain.handle(CHANNELS.MEMORY_INFO, async () => this.getMemoryInfo());
+    ipcMain.handle(CHANNELS.PROCESS_LIST, async () => this.getProcessList());
     // Allow renderer to react to updates
     ipcMain.on('window-visibility-changed', (_event, hidden: boolean) => {
       this.isWindowHidden = hidden;
@@ -61,12 +61,15 @@ export class MemoryService {
       const list = await psList();
       // Sort by memory usage (rss) descending, take top 15
       const top = list
-        .map(p => ({
-          pid: p.pid,
-          name: p.name,
-          workingSet: p.memory?.rss ?? 0,
-          privateBytes: p.memory?.private ?? 0,
-        }))
+        .map(p => {
+          const mem = p.memory as any;
+          return {
+            pid: p.pid,
+            name: p.name,
+            workingSet: mem?.rss ?? mem ?? 0,
+            privateBytes: mem?.private ?? mem ?? 0,
+          };
+        })
         .sort((a, b) => b.workingSet - a.workingSet)
         .slice(0, 15);
       return top;
