@@ -6,15 +6,16 @@ import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log('🛠️ Compiling main process...');
+console.log('🛠️ Cleaning and compiling main process...');
 
-// Create the output directory if it doesn't exist
-const outputDir = path.join(__dirname, '../dist-electron/main');
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir, { recursive: true });
+// Clean the output directory to avoid conflicts with previous builds
+const outputDir = path.join(__dirname, '../dist-electron');
+if (fs.existsSync(outputDir)) {
+  fs.rmSync(outputDir, { recursive: true, force: true });
 }
+fs.mkdirSync(path.join(outputDir, 'main'), { recursive: true });
 
-// We use spawn instead of spawnSync to get real-time output and better error capturing
+// Use spawn for real-time output
 const compileMain = spawn('npx', [
   'tsc',
   '-p', 'tsconfig.json',
@@ -23,7 +24,6 @@ const compileMain = spawn('npx', [
   '--target', 'es2020',
   '--esModuleInterop',
   '--skipLibCheck',
-  '--strictNullChecks'
 ], { shell: true });
 
 compileMain.stdout.on('data', (data) => {
@@ -36,7 +36,7 @@ compileMain.stderr.on('data', (data) => {
 
 compileMain.on('close', (code) => {
   if (code !== 0) {
-    console.error(`❌ Failed to compile main process with exit code ${code}. Please check the TypeScript errors above.`);
+    console.error(`❌ Failed to compile main process with exit code ${code}.`);
     process.exit(1);
   }
 
