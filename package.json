@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Lightweight Windows desktop utility for monitoring and cleaning RAM, CPU, and GPU",
-  "main": "dist-electron/main/index.js",
+  "main": "src/main/index.ts",
   "author": "LiteBoost Team",
   "license": "MIT",
   "scripts": {
@@ -13,7 +13,7 @@
     "build": "tsc -p tsconfig.node.json && vite build && electron-builder",
     "build-vite": "vite build",
     "package": "electron-builder",
-    "package:win": "npm run build && electron-builder --win",
+    "package:win": "npm run build && electron-builder",
     "lint": "eslint .",
     "preview": "vite preview"
   },
