@@ -79,12 +79,13 @@ export class MemoryService {
       const list = await psList();
       const top = list
         .map(p => {
+          // Cast as any to safely access potential memory properties that vary by OS/version
           const mem = p.memory as any;
           return {
             pid: p.pid,
             name: p.name,
-            workingSet: mem?.rss ?? mem ?? 0,
-            privateBytes: mem?.private ?? mem ?? 0,
+            workingSet: (typeof mem === 'number') ? mem : (mem?.rss ?? 0),
+            privateBytes: (typeof mem === 'number') ? mem : (mem?.private ?? 0),
           };
         })
         .sort((a, b) => b.workingSet - a.workingSet)

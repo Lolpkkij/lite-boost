@@ -3,7 +3,7 @@ import path from 'path';
 import { config } from 'dotenv';
 import { CHANNELS } from '../shared/ipc';
 import { MemoryService } from './services/memory';
-import { setMainWindow } from './window';
+import { setMainWindow, getMainWindow } from './window';
 
 config();
 
@@ -20,7 +20,6 @@ if (!gotTheLock) {
   app.quit();
 } else {
   app.on('second-instance', () => {
-    const { getMainWindow } = require('./window');
     const mainWindow = getMainWindow();
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
@@ -74,7 +73,6 @@ function createWindow(): BrowserWindow {
   });
 
   setInterval(() => {
-    const { getMainWindow } = require('./window');
     const mainWindow = getMainWindow();
     if (mainWindow && !mainWindow.isMinimized()) {
       isAppVisible = true;
@@ -97,14 +95,12 @@ app.whenReady().then(() => {
   startWindow();
 
   app.on('activate', () => {
-    const { getMainWindow } = require('./window');
     if (getMainWindow() === null) {
       createWindow();
     }
   });
 
   globalShortcut.register('CommandOrControl+Shift+M', () => {
-    const { getMainWindow } = require('./window');
     const mainWindow = getMainWindow();
     if (mainWindow) {
       if (mainWindow.isMinimized()) {
@@ -116,17 +112,14 @@ app.whenReady().then(() => {
   });
 
   globalShortcut.register('CommandOrControl+Shift+X', () => {
-    const { getMainWindow } = require('./window');
     getMainWindow()?.close();
   });
 
   ipcMain.handle(CHANNELS.WINDOW_SET_BOUNDS, (_event, bounds: { x: number; y: number }) => {
-    const { getMainWindow } = require('./window');
     getMainWindow()?.setBounds(bounds);
   });
 
   ipcMain.handle(CHANNELS.WINDOW_SET_MINIMIZED, (_event, minimized: boolean) => {
-    const { getMainWindow } = require('./window');
     const mainWindow = getMainWindow();
     if (mainWindow) {
       if (minimized) {
@@ -140,7 +133,6 @@ app.whenReady().then(() => {
   });
   
   ipcMain.handle(CHANNELS.WINDOW_SET_MAXIMIZED, (_event, maximized: boolean) => {
-    const { getMainWindow } = require('./window');
     const mainWindow = getMainWindow();
     if (mainWindow) {
       if (maximized) {
