@@ -14,26 +14,33 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Use tsc to compile the main process files to the expected dist-electron folder
-// We use npx tsc to avoid requiring tsc to be globally installed
-const compileMain = spawnSync('npx', [
-  'tsc', 
-  'src/main/index.ts', 
-  '--outDir', 
-  'dist-electron/main', 
-  '--module', 
-  'commonjs', 
-  '--target', 
-  'es6', 
-  '--esModuleInterop', 
+// Try to use local tsc first, fallback to npx
+const tscPath = path.join(__dirname, '../node_modules/.bin/tsc');
+const tscArgs = [
+  'src/main/index.ts',
+  '--outDir', 'dist-electron/main',
+  '--module', 'commonjs',
+  '--target', 'es6',
+  '--esModuleInterop',
   '--skipLibCheck'
-], { shell: true, stdio: 'inherit' });
+];
+
+let compileMain;
+if (fs.existsSync(tscPath)) {
+  console.log('📦 Using local tsc...');
+  compileMain = spawnSync(tscPath, tscArgs, { shell: true, stdio: 'inherit' });
+} else {
+  console.log('📦 Using npx tsc...');
+  compileMain = spawnSync('npx', ['tsc', ...tscArgs], { shell: true, stdio: 'inherit' });
+}
 
 if (compileMain.status !== 0) {
   console.error('❌ Failed to compile main process. Please check your TypeScript errors.');
+  console.log('💡 Make sure you have run `npm install` to install dependencies.');
   process.exit(1);
 }
 
+console.log('✅ Main process compiled successfully!');
 console.log('🚀 LiteBoost is starting...\n');
 
 const mainProcess = spawn(
