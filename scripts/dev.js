@@ -14,8 +14,8 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Use npx tsc with the project config to avoid TS5112
-const compileMain = spawnSync('npx', [
+// We use spawn instead of spawnSync to get real-time output and better error capturing
+const compileMain = spawn('npx', [
   'tsc',
   '-p', 'tsconfig.json',
   '--outDir', 'dist-electron/main',
@@ -24,33 +24,47 @@ const compileMain = spawnSync('npx', [
   '--esModuleInterop',
   '--skipLibCheck',
   '--strictNullChecks'
-], { shell: true, stdio: 'inherit' });
+], { shell: true });
 
-if (compileMain.status !== 0) {
-  console.error('❌ Failed to compile main process. Please check your TypeScript errors.');
-  process.exit(1);
-}
-
-console.log('✅ Main process compiled successfully!');
-console.log('🚀 LiteBoost is starting...\n');
-
-const mainProcess = spawn(
-  'npx',
-  ['electron', '.'],
-  {
-    stdio: 'inherit',
-    shell: true,
-    env: {
-      ...process.env,
-      ELECTRON_DISABLE_Sandboxing: '1',
-      NODE_PATH: './node_modules',
-    },
-  }
-);
-
-mainProcess.on('exit', (code) => {
-  process.exit(code || 0);
+compileMain.stdout.on('data', (data) => {
+  process.stdout.write(data);
 });
 
-process.on('SIGINT', () => mainProcess.kill('SIGINT'));
-process.on('SIGTERM', () => mainProcess.kill('SIGTERM'));
+compileMain.stderr.on('data', (data) => {
+  process.stderr.write(data);
+});
+
+compileMain.on('close', (code) => {
+  if (code !== 0) {
+    console.error(`❌ Failed to compile main process with exit code ${code}. Please check the TypeScript errors above.`);
+    process.exit(1);
+  }
+
+  console.log('✅ Main process compiled successfully!');
+  console.log('🚀 LiteBoost is starting...\n');
+
+  const mainProcess = spawn(
+    'npx',
+    ['electron', '.'],
+    {
+      stdio: 'inherit',
+      shell: true,
+      env: {
+        ...process.env,
+        ELECTRON_DISABLE_Sandboxing: '1',
+        NODE_PATH: './node_modules',
+      },
+    }
+  );
+
+  mainProcess.on('exit', (code) => {
+    process.exit(code || 0);
+  });
+});
+
+process.on('SIGINT', () => {
+  compileMain.kill();
+});
+process.on('SIGTERM', () => {
+  compileMain.kill();
+});

@@ -23,8 +23,7 @@ if (!gotTheLock) {
 }
 else {
     electron_1.app.on('second-instance', () => {
-        const { getMainWindow } = require('./window');
-        const mainWindow = getMainWindow();
+        const mainWindow = (0, window_1.getMainWindow)();
         if (mainWindow) {
             if (mainWindow.isMinimized())
                 mainWindow.restore();
@@ -71,8 +70,7 @@ function createWindow() {
         isAppVisible = false;
     });
     setInterval(() => {
-        const { getMainWindow } = require('./window');
-        const mainWindow = getMainWindow();
+        const mainWindow = (0, window_1.getMainWindow)();
         if (mainWindow && !mainWindow.isMinimized()) {
             isAppVisible = true;
         }
@@ -90,14 +88,12 @@ function startWindow() {
 electron_1.app.whenReady().then(() => {
     startWindow();
     electron_1.app.on('activate', () => {
-        const { getMainWindow } = require('./window');
-        if (getMainWindow() === null) {
+        if ((0, window_1.getMainWindow)() === null) {
             createWindow();
         }
     });
     electron_1.globalShortcut.register('CommandOrControl+Shift+M', () => {
-        const { getMainWindow } = require('./window');
-        const mainWindow = getMainWindow();
+        const mainWindow = (0, window_1.getMainWindow)();
         if (mainWindow) {
             if (mainWindow.isMinimized()) {
                 mainWindow.restore();
@@ -108,16 +104,13 @@ electron_1.app.whenReady().then(() => {
         }
     });
     electron_1.globalShortcut.register('CommandOrControl+Shift+X', () => {
-        const { getMainWindow } = require('./window');
-        getMainWindow()?.close();
+        (0, window_1.getMainWindow)()?.close();
     });
     electron_1.ipcMain.handle(ipc_1.CHANNELS.WINDOW_SET_BOUNDS, (_event, bounds) => {
-        const { getMainWindow } = require('./window');
-        getMainWindow()?.setBounds(bounds);
+        (0, window_1.getMainWindow)()?.setBounds(bounds);
     });
     electron_1.ipcMain.handle(ipc_1.CHANNELS.WINDOW_SET_MINIMIZED, (_event, minimized) => {
-        const { getMainWindow } = require('./window');
-        const mainWindow = getMainWindow();
+        const mainWindow = (0, window_1.getMainWindow)();
         if (mainWindow) {
             if (minimized) {
                 mainWindow.minimize();
@@ -130,8 +123,7 @@ electron_1.app.whenReady().then(() => {
         }
     });
     electron_1.ipcMain.handle(ipc_1.CHANNELS.WINDOW_SET_MAXIMIZED, (_event, maximized) => {
-        const { getMainWindow } = require('./window');
-        const mainWindow = getMainWindow();
+        const mainWindow = (0, window_1.getMainWindow)();
         if (mainWindow) {
             if (maximized) {
                 mainWindow.maximize();
