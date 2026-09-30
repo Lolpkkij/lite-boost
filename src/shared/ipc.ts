@@ -4,7 +4,9 @@ export const CHANNELS = {
   MEMORY_INFO: 'memory:info',
   MEMORY_TRIM: 'memory:trim',
 
-  // CPU channels
+  // Process channels
+  PROCESS_LIST: 'process:list',
+
   CPU_INFO: 'cpu:info',
 
   // GPU channels

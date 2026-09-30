@@ -1,19 +1,49 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Gauges } from '@/components/Gauges';
+import { MainLayout } from '@/components/MainLayout';
+import { useState, useEffect } from 'react';
+import MemoryTab from '@/components/MemoryTab';
+import { ipcRenderer } from 'electron';
+import { CHANNELS, type MemoryInfo } from '@/shared/ipc';
 
-import { MadeWithDyad } from "@/components/made-with-dyad";
+export default function Index() {
+  const [activeTab, setActiveTab] = useState('memory');
+  const [ramPercent, setRamPercent] = useState('--');
 
-const Index = () => {
+  useEffect(() => {
+    const handleMemoryInfoUpdated = (_event: any, info: MemoryInfo) => {
+      setRamPercent(`${info.usedPercentage}`);
+    };
+    ipcRenderer.on('memory-info-updated', handleMemoryInfoUpdated);
+    // Initial fetch
+    ipcRenderer.invoke(CHANNELS.MEMORY_INFO).then((info: MemoryInfo) => {
+      setRamPercent(`${info.usedPercentage}`);
+    });
+    return () => {
+      ipcRenderer.removeListener('memory-info-updated', handleMemoryInfoUpdated);
+    };
+  }, []);
+
+  const renderTab = () => {
+    switch (activeTab) {
+      case 'memory':
+        return <MemoryTab />;
+      case 'cpu':
+        // placeholder cpu component
+        return <div>CPU Tab</div>;
+      case 'gpu':
+        return <div>GPU Tab</div>;
+      case 'settings':
+        return <div>Settings</div>;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">
-          Start building your amazing project here!
-        </p>
-      </div>
-      <MadeWithDyad />
-    </div>
+    <MainLayout activeTab={activeTab} onTabChange={setActiveTab}>
+      {/* Top RAM gauge */}
+      <Gauges ramPercent={ramPercent} cpuPercent="--" gpuPercent="--" />
+      {renderTab()}
+    </MainLayout>
   );
-};
-
-export default Index;
+}

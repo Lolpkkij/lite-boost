@@ -2,6 +2,7 @@ import { app, BrowserWindow, globalShortcut, ipcMain, systemPreferences, screen 
 import path from 'path';
 import { config } from 'dotenv';
 import { CHANNELS, type MemoryInfo, type CPUInfo, type GPUInfo } from '../shared/ipc';
+import { MemoryService } from './services/memory';
 
 config();
 
@@ -10,6 +11,9 @@ let lastDatabaseFlush = 0;
 const FLUSH_INTERVAL = 1000; // 1 second
 let isAppVisible = true;
 let isMinimized = false;
+
+// Initialize memory service
+const memoryService = new MemoryService();
 
 // Single instance lock
 const gotTheLock = app.requestSingleInstanceLock();

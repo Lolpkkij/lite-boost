@@ -30,7 +30,7 @@ export function Gauges({ ramPercent, cpuPercent, gpuPercent }: GaugesProps) {
     if (gpuPercent !== '--' && gpuPercent !== '') {
       const parsed = parseFloat(gpuPercent);
       if (!isNaN(parsed) && parsed <= 100) {
-        setGpuValue(cpuPercent);
+        setGpuValue(gpuPercent);
       }
     }
   }, [ramPercent, cpuPercent, gpuPercent]);
