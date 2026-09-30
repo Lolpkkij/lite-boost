@@ -1,12 +1,12 @@
-import { app, BrowserWindow, globalShortcut, ipcMain, screen } from 'electron';
+import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron';
 import path from 'path';
 import { config } from 'dotenv';
 import { CHANNELS } from '../shared/ipc';
 import { MemoryService } from './services/memory';
+import { setMainWindow } from './window';
 
 config();
 
-let mainWindow: BrowserWindow | null = null;
 let isAppVisible = true;
 let isMinimized = false;
 
@@ -20,6 +20,8 @@ if (!gotTheLock) {
   app.quit();
 } else {
   app.on('second-instance', () => {
+    const { getMainWindow } = require('./window');
+    const mainWindow = getMainWindow();
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
@@ -29,7 +31,7 @@ if (!gotTheLock) {
 
 // Window management
 function createWindow(): BrowserWindow {
-  mainWindow = new BrowserWindow({
+  const win = new BrowserWindow({
     width: 900,
     height: 620,
     frame: false,
@@ -44,35 +46,36 @@ function createWindow(): BrowserWindow {
     backgroundColor: '#1a1a2e',
   });
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+  setMainWindow(win);
+
+  win.on('closed', () => {
+    setMainWindow(null);
   });
 
-  // Auto-hide cursor when not moving
-  mainWindow.on('blur', () => {
-    mainWindow?.blur();
+  win.on('blur', () => {
+    win.blur();
   });
 
-  mainWindow.on('focus', () => {
-    mainWindow?.showInactive();
+  win.on('focus', () => {
+    win.showInactive();
   });
 
-  // Window visibility detection
-  mainWindow.on('enter-full-screen', () => {
+  win.on('enter-full-screen', () => {
     isAppVisible = true;
   });
-  mainWindow.on('leave-full-screen', () => {
+  win.on('leave-full-screen', () => {
     isAppVisible = false;
   });
-  mainWindow.on('enter-html-full-screen', () => {
+  win.on('enter-html-full-screen', () => {
     isAppVisible = true;
   });
-  mainWindow.on('leave-html-full-screen', () => {
+  win.on('leave-html-full-screen', () => {
     isAppVisible = false;
   });
 
-  // Start background timer for window visibility
   setInterval(() => {
+    const { getMainWindow } = require('./window');
+    const mainWindow = getMainWindow();
     if (mainWindow && !mainWindow.isMinimized()) {
       isAppVisible = true;
     } else {
@@ -80,29 +83,29 @@ function createWindow(): BrowserWindow {
     }
   }, 1000);
 
-  return mainWindow;
+  return win;
 }
 
-// Toggle hardware acceleration
 app.disableHardwareAcceleration();
 
-// Launch browser window
 function startWindow() {
-  mainWindow = createWindow();
-  mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+  const win = createWindow();
+  win.loadFile(path.join(__dirname, '../renderer/index.html'));
 }
 
 app.whenReady().then(() => {
   startWindow();
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
+    const { getMainWindow } = require('./window');
+    if (getMainWindow() === null) {
       createWindow();
     }
   });
 
-  // Register global shortcuts
   globalShortcut.register('CommandOrControl+Shift+M', () => {
+    const { getMainWindow } = require('./window');
+    const mainWindow = getMainWindow();
     if (mainWindow) {
       if (mainWindow.isMinimized()) {
         mainWindow.restore();
@@ -113,17 +116,18 @@ app.whenReady().then(() => {
   });
 
   globalShortcut.register('CommandOrControl+Shift+X', () => {
-    mainWindow?.close();
+    const { getMainWindow } = require('./window');
+    getMainWindow()?.close();
   });
 
-  // Electron IPC handlers
   ipcMain.handle(CHANNELS.WINDOW_SET_BOUNDS, (_event, bounds: { x: number; y: number }) => {
-    if (mainWindow) {
-      mainWindow.setBounds(bounds);
-    }
+    const { getMainWindow } = require('./window');
+    getMainWindow()?.setBounds(bounds);
   });
 
   ipcMain.handle(CHANNELS.WINDOW_SET_MINIMIZED, (_event, minimized: boolean) => {
+    const { getMainWindow } = require('./window');
+    const mainWindow = getMainWindow();
     if (mainWindow) {
       if (minimized) {
         mainWindow.minimize();
@@ -136,6 +140,8 @@ app.whenReady().then(() => {
   });
   
   ipcMain.handle(CHANNELS.WINDOW_SET_MAXIMIZED, (_event, maximized: boolean) => {
+    const { getMainWindow } = require('./window');
+    const mainWindow = getMainWindow();
     if (mainWindow) {
       if (maximized) {
         mainWindow.maximize();
@@ -148,15 +154,6 @@ app.whenReady().then(() => {
   ipcMain.handle(CHANNELS.WINDOW_IS_MINIMIZED, (_event) => {
     return isMinimized;
   });
-  
-  // Start background timer for window visibility
-  setInterval(() => {
-    if (mainWindow && !mainWindow.isMinimized()) {
-      isAppVisible = true;
-    } else {
-      isAppVisible = false;
-    }
-  }, 1000);
 });
 
 app.on('will-quit', () => {
@@ -169,4 +166,4 @@ app.on('window-all-closed', () => {
   }
 });
 
-export { app, mainWindow };
+export { app };

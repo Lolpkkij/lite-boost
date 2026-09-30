@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { CHANNELS, type MemoryInfo } from '../../shared/ipc';
 import os from 'os';
 import psList from 'ps-list';
-import { mainWindow } from '../index';
+import { getMainWindow } from '../window';
 
 export class MemoryService {
   private intervalId: NodeJS.Timeout | null = null;
@@ -14,20 +14,15 @@ export class MemoryService {
   }
 
   private setupIpcHandlers() {
-    // Provide immediate info on request
     ipcMain.handle(CHANNELS.MEMORY_INFO, async () => this.getMemoryInfo());
     ipcMain.handle(CHANNELS.PROCESS_LIST, async () => this.getProcessList());
     
-    // Implement Memory Cleaning handler
     ipcMain.handle(CHANNELS.MEMORY_CLEAN, async (_event, mode: string) => {
       console.log(`Cleaning memory with mode: ${mode}`);
-      // In a real scenario, we would execute a native call here.
-      
-      // We simulate a delay to mimic the cleaning process
       await new Promise(resolve => setTimeout(resolve, 800));
       
-      // Trigger an immediate update to the renderer
       const mem = this.getMemoryInfo();
+      const mainWindow = getMainWindow();
       if (mainWindow) {
         mainWindow.webContents.send('memory-info-updated', mem);
       }
@@ -49,13 +44,14 @@ export class MemoryService {
     if (this.intervalId) clearInterval(this.intervalId);
     const interval = this.isWindowHidden ? 10000 : 2000;
     this.intervalId = setInterval(() => {
-      // Emit updates for both memory and processes
       const mem = this.getMemoryInfo();
+      const mainWindow = getMainWindow();
       if (mainWindow) {
         mainWindow.webContents.send('memory-info-updated', mem);
       }
       
       this.getProcessList().then(list => {
+        const mainWindow = getMainWindow();
         if (mainWindow) {
           mainWindow.webContents.send('process-list-updated', list);
         }
