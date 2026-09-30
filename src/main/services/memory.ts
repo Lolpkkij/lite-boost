@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { CHANNELS, type MemoryInfo } from '../../shared/ipc';
 import os from 'os';
 import psList from 'ps-list';
+import { mainWindow } from '../index';
 
 export class MemoryService {
   private intervalId: NodeJS.Timeout | null = null;
@@ -21,14 +22,15 @@ export class MemoryService {
     ipcMain.handle(CHANNELS.MEMORY_CLEAN, async (_event, mode: string) => {
       console.log(`Cleaning memory with mode: ${mode}`);
       // In a real scenario, we would execute a native call here.
-      // E.g., calling a C++ addon that invokes EmptyWorkingSet or SetProcessWorkingSetSize
       
       // We simulate a delay to mimic the cleaning process
       await new Promise(resolve => setTimeout(resolve, 800));
       
-      // Trigger an immediate update to the renderer to show the "drop" in usage
+      // Trigger an immediate update to the renderer
       const mem = this.getMemoryInfo();
-      ipcMain.emit('memory-info-updated', mem);
+      if (mainWindow) {
+        mainWindow.webContents.send('memory-info-updated', mem);
+      }
       
       return { success: true, mode };
     });
@@ -49,9 +51,14 @@ export class MemoryService {
     this.intervalId = setInterval(() => {
       // Emit updates for both memory and processes
       const mem = this.getMemoryInfo();
-      ipcMain.emit('memory-info-updated', mem);
+      if (mainWindow) {
+        mainWindow.webContents.send('memory-info-updated', mem);
+      }
+      
       this.getProcessList().then(list => {
-        ipcMain.emit('process-list-updated', list);
+        if (mainWindow) {
+          mainWindow.webContents.send('process-list-updated', list);
+        }
       });
     }, interval);
   }
