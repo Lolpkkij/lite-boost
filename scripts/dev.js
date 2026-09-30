@@ -8,12 +8,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Use npx to ensure Electron is available and properly located
-// Pass -D to force node modules to be found
+// Added shell: true to resolve ENOENT error when spawning npx
 const mainProcess = spawn(
   'npx',
   ['electron', '.'],
   {
     stdio: 'inherit',
+    shell: true,
     env: {
       ...process.env,
       ELECTRON_DISABLE_Sandboxing: '1',
