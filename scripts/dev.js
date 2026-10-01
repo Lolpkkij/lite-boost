@@ -17,11 +17,11 @@ const compileMain = spawn('npx', [
   'tsc',
   '-p', 'tsconfig.json',
   '--outDir', 'dist-electron',
-  '--module', 'commonjs',
-  '--target', 'es2020',
+  '--sourceMap',
+  '--declaration',
   '--esModuleInterop',
   '--skipLibCheck',
-  '--noEmit', 'false'
+  '--forceConsistentCasingInFileNames'
 ], { shell: true });
 
 compileMain.stdout.on('data', (data) => {
