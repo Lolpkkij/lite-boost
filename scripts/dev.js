@@ -12,12 +12,11 @@ const outputDir = path.join(__dirname, '../dist-electron');
 if (fs.existsSync(outputDir)) {
   fs.rmSync(outputDir, { recursive: true, force: true });
 }
-fs.mkdirSync(path.join(outputDir, 'main'), { recursive: true });
 
 const compileMain = spawn('npx', [
   'tsc',
   '-p', 'tsconfig.json',
-  '--outDir', 'dist-electron/main',
+  '--outDir', 'dist-electron',
   '--module', 'commonjs',
   '--target', 'es2020',
   '--esModuleInterop',
