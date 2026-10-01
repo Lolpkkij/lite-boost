@@ -14,24 +14,12 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "allowJs": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@lib/*": ["./src/lib/*"],
-      "@shared/*": ["./src/shared/*"]
-    }
+    "moduleResolution": "node"
   },
   "include": [
-    "src/**/*.ts"
+    "src/main/**/*.ts",
+    "src/preload/**/*.ts",
+    "src/shared/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "dist-electron"
-  ]
+  "exclude": ["node_modules", "dist", "dist-electron"]
 }
