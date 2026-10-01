@@ -1,118 +1,185 @@
-{
-  "name": "liteboost",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "description": "Lightweight Windows desktop utility for monitoring and cleaning RAM, CPU, and GPU",
-  "main": "dist-electron/main/index.js",
-  "author": "LiteBoost Team",
-  "license": "MIT",
-  "scripts": {
-    "dev": "node scripts/dev.js",
-    "dev-vite": "vite",
-    "build": "tsc -p tsconfig.node.json && vite build && electron-builder",
-    "build-vite": "vite build",
-    "package": "electron-builder",
-    "package:win": "npm run build && electron-builder",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@radix-ui/react-accordion": "^1.2.0",
-    "@radix-ui/react-alert-dialog": "^1.1.1",
-    "@radix-ui/react-aspect-ratio": "^1.1.0",
-    "@radix-ui/react-avatar": "^1.1.0",
-    "@radix-ui/react-checkbox": "^1.1.1",
-    "@radix-ui/react-collapsible": "^1.1.0",
-    "@radix-ui/react-context-menu": "^2.2.1",
-    "@radix-ui/react-dialog": "^1.1.2",
-    "@radix-ui/react-dropdown-menu": "^2.1.1",
-    "@radix-ui/react-hover-card": "^1.1.1",
-    "@radix-ui/react-label": "^2.1.0",
-    "@radix-ui/react-menubar": "^1.1.1",
-    "@radix-ui/react-navigation-menu": "^1.2.0",
-    "@radix-ui/react-popover": "^1.1.1",
-    "@radix-ui/react-progress": "^1.1.0",
-    "@radix-ui/react-radio-group": "^1.2.0",
-    "@radix-ui/react-scroll-area": "^1.1.0",
-    "@radix-ui/react-select": "^2.1.1",
-    "@radix-ui/react-separator": "^1.1.0",
-    "@radix-ui/react-slider": "^1.2.0",
-    "@radix-ui/react-slot": "^1.1.0",
-    "@radix-ui/react-switch": "^1.1.0",
-    "@radix-ui/react-tabs": "^1.1.0",
-    "@radix-ui/react-toast": "^1.2.1",
-    "@radix-ui/react-toggle": "^1.1.0",
-    "@radix-ui/react-toggle-group": "^1.1.0",
-    "@radix-ui/react-tooltip": "^1.1.4",
-    "@tanstack/react-query": "^5.56.2",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "cmdk": "^1.0.0",
-    "date-fns": "^3.6.0",
-    "dotenv": "^18.0.4",
-    "embla-carousel-react": "^8.3.0",
-    "input-otp": "^1.2.4",
-    "koffi": "^3.3.2",
-    "lucide-react": "^0.462.0",
-    "next-themes": "^0.3.0",
-    "ps-list": "^9.0.0",
-    "react": "^19.2.3",
-    "react-day-picker": "^9.13.0",
-    "react-dom": "^19.2.3",
-    "react-hook-form": "^7.53.0",
-    "react-resizable-panels": "^2.1.3",
-    "react-router-dom": "^6.30.4",
-    "recharts": "^2.12.7",
-    "sonner": "^1.5.0",
-    "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7",
-    "vaul": "^1.1.2",
-    "zod": "^3.25.0"
-  },
-  "devDependencies": {
-    "@dyad-sh/react-vite-component-tagger": "^0.9.0",
-    "@eslint/js": "^9.9.0",
-    "@tailwindcss/typography": "^0.5.15",
-    "@types/node": "^26.6.3",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react-swc": "^4.3.0",
-    "autoprefixer": "^10.6.1",
-    "electron": "^44.4.5",
-    "electron-builder": "^25.1.8",
-    "eslint": "^9.9.0",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.9",
-    "globals": "^15.9.0",
-    "postcss": "^8.5.28",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^7.0.2",
-    "typescript-eslint": "^8.0.1",
-    "vite": "^8.0.0"
-  },
-  "build": {
-    "appId": "com.liteboost.desktop",
-    "productName": "LiteBoost",
-    "directories": {
-      "output": "dist",
-      "buildResources": "build"
-    },
-    "files": [
-      "dist/**/*",
-      "package.json"
-    ],
-    "win": {
-      "target": "nsis",
-      "icon": "build/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
-    }
-  }
-}
+... ＜/dyad-write>
+
+   Then, we'll run the Rebuild command.
+
+   However, note: the Rebuild command will also reinstall other dependencies? Yes, but that's okay.
+
+   Let's proceed.
+
+   But wait: the user said "do not change any app code or tsconfig options". We are changing package.json, which is not app code? It's project configuration. I think it's acceptable.
+
+   If the user meant not to change the source code (src/), then we are safe.
+
+   Let's write the package.json.
+
+   We'll copy the entire package.json from the context and change the typescript version.
+
+   However, note: the package.json in the context might be truncated? We see the entire package.json in the context.
+
+   We'll copy it and change the typescript version.
+
+   Alternatively, we can use a patch? But we are only allowed to use dyad-write for the entire file.
+
+   Let's write the entire package.json with the change.
+
+   We'll change:
+        "typescript": "^7.0.2"
+   to
+        "typescript": "5.9"
+
+   Note: we are removing the caret and using exactly 5.9? The user said to pin to 5.9.
+
+   We'll use "5.9" (which is equivalent to 5.9.0) and it will allow patch updates? But the user said pinning, so we can use "5.9.0" to be exact? However, the user said 5.9.
+
+   We'll use "5.9" as requested.
+
+   Let's do it.
+
+   Step 1: Update package.json.
+
+   Step 2: Run Rebuild.
+
+   We'll do both in one response? We can do:
+
+   First, write the package.json.
+   Then, run the Rebuild command.
+
+   But note: the Rebuild command will run after we write the file.
+
+   Let's write the package.json.
+
+   We'll output the entire package.json.
+
+   However, note: the package.json is long. We must be cautious.
+
+   We'll copy the package.json from the context and change the typescript version.
+
+   Let's get the package.json from the context:
+
+   {
+     "name": "liteboost",
+     "version": "1.0.0",
+     "private": true,
+     "type": "module",
+     "description": "Lightweight Windows desktop utility for monitoring and cleaning RAM, CPU, and GPU",
+     "main": "dist-electron/main/index.js",
+     "author": "LiteBoost Team",
+     "license": "MIT",
+     "scripts": {
+       "dev": "node scripts/dev.js",
+       "dev-vite": "vite",
+       "build": "tsc -p tsconfig.json && vite build && electron-builder",
+       "build-vite": "vite build",
+       "package": "electron-builder",
+       "package:win": "npm run build && electron-builder",
+       "lint": "eslint .",
+       "preview": "vite preview"
+     },
+     "dependencies": {
+       "@radix-ui/react-accordion": "^1.2.0",
+       "@radix-ui/react-alert-dialog": "^1.1.1",
+       "@radix-ui/react-aspect-ratio": "^1.1.0",
+       "@radix-ui/react-avatar": "^1.1.0",
+       "@radix-ui/react-checkbox": "^1.1.1",
+       "@radix-ui/react-collapsible": "^1.1.0",
+       "@radix-ui/react-context-menu": "^2.2.1",
+       "@radix-ui/react-dialog": "^1.1.2",
+       "@radix-ui/react-dropdown-menu": "^2.1.1",
+       "@radix-ui/react-hover-card": "^1.1.1",
+       "@radix-ui/react-label": "^2.1.0",
+       "@radix-ui/react-menubar": "^1.1.1",
+       "@radix-ui/react-navigation-menu": "^1.2.0",
+       "@radix-ui/react-popover": "^1.1.1",
+       "@radix-ui/react-progress": "^1.1.0",
+       "@radix-ui/react-radio-group": "^1.2.0",
+       "@radix-ui/react-scroll-area": "^1.1.0",
+       "@radix-ui/react-select": "^2.1.1",
+       "@radix-ui/react-separator": "^1.1.0",
+       "@radix-ui/react-slider": "^1.2.0",
+       "@radix-ui/react-slot": "^1.1.0",
+       "@radix-ui/react-switch": "^1.1.0",
+       "@radix-ui/react-tabs": "^1.1.0",
+       "@radix-ui/react-toggle": "^1.1.0",
+       "@radix-ui/react-toggle-group": "^1.1.0",
+       "@radix-ui/react-tooltip": "^1.1.4",
+       "@tanstack/react-query": "^5.56.2",
+       "class-variance-authority": "^0.7.1",
+       "clsx": "^2.1.1",
+       "cmdk": "^1.0.0",
+       "date-fns": "^3.6.0",
+       "dotenv": "^18.0.4",
+       "embla-carousel-react": "^8.3.0",
+       "input-otp": "^1.2.4",
+       "koffi": "^3.3.2",
+       "lucide-react": "^0.462.0",
+       "next-themes": "^0.3.0",
+       "ps-list": "^9.0.0",
+       "react": "^19.2.3",
+       "react-day-picker": "^9.13.0",
+       "react-dom": "^19.2.3",
+       "react-hook-form": "^7.53.0",
+       "react-resizable-panels": "^2.1.3",
+       "react-router-dom": "^6.30.4",
+       "recharts": "^2.12.7",
+       "sonner": "^1.5.0",
+       "tailwind-merge": "^2.5.2",
+       "tailwindcss-animate": "^1.0.7",
+       "vaul": "^1.1.2",
+       "zod": "^3.25.0"
+     },
+     "devDependencies": {
+       "@dyad-sh/react-vite-component-tagger": "^0.9.0",
+       "@eslint/js": "^9.9.0",
+       "@tailwindcss/typography": "^0.5.15",
+       "@types/node": "^26.6.3",
+       "@types/react": "^19.3.0",
+       "@types/react-dom": "^19.3.0",
+       "@vitejs/plugin-react-swc": "^4.3.0",
+       "autoprefixer": "^10.6.1",
+       "electron": "^44.4.5",
+       "electron-builder": "^25.1.8",
+       "eslint": "^9.9.0",
+       "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+       "eslint-plugin-react-refresh": "^0.4.9",
+       "globals": "^15.9.0",
+       "postcss": "^8.5.28",
+       "tailwindcss": "^4.3.3",
+       "typescript": "^7.0.2",
+       "typescript-eslint": "^8.0.1",
+       "vite": "^8.0.0"
+     },
+     "build": {
+       "appId": "com.liteboost.desktop",
+       "productName": "LiteBoost",
+       "directories": {
+         "output": "dist",
+         "buildResources": "build"
+       },
+       "files": [
+         "dist/**/*",
+         "package.json"
+       ],
+       "win": {
+         "target": "nsis",
+         "icon": "build/icon.ico"
+       },
+       "nsis": {
+         "oneClick": false,
+         "allowToChangeInstallationDirectory": true,
+         "installerIcon": "build/icon.ico",
+         "uninstallerIcon": "build/icon.ico",
+         "createDesktopShortcut": true,
+         "createStartMenuShortcut": true
+       }
+     }
+   }
+
+   We change the devDependencies typescript to "5.9"
+
+   Let's write the file.
+
+   Then, we'll run the Rebuild command.
+
+   We'll output:
+
+   ＜dyad-write path="package.json"> ... the entire JSON with the change ...
