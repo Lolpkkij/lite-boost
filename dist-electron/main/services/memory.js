@@ -1,15 +1,9 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.MemoryService = void 0;
-const electron_1 = require("electron");
-const ipc_1 = require("../../shared/ipc");
-const os_1 = __importDefault(require("os"));
-const ps_list_1 = __importDefault(require("ps-list"));
-const window_1 = require("../window");
-class MemoryService {
+import { ipcMain } from 'electron';
+import { CHANNELS } from '../../shared/ipc';
+import os from 'os';
+import psList from 'ps-list';
+import { getMainWindow } from '../window';
+export class MemoryService {
     constructor() {
         this.intervalId = null;
         this.isWindowHidden = false;
@@ -17,19 +11,19 @@ class MemoryService {
         this.start();
     }
     setupIpcHandlers() {
-        electron_1.ipcMain.handle(ipc_1.CHANNELS.MEMORY_INFO, async () => this.getMemoryInfo());
-        electron_1.ipcMain.handle(ipc_1.CHANNELS.PROCESS_LIST, async () => this.getProcessList());
-        electron_1.ipcMain.handle(ipc_1.CHANNELS.MEMORY_CLEAN, async (_event, mode) => {
+        ipcMain.handle(CHANNELS.MEMORY_INFO, async () => this.getMemoryInfo());
+        ipcMain.handle(CHANNELS.PROCESS_LIST, async () => this.getProcessList());
+        ipcMain.handle(CHANNELS.MEMORY_CLEAN, async (_event, mode) => {
             console.log(`Cleaning memory with mode: ${mode}`);
             await new Promise(resolve => setTimeout(resolve, 800));
             const mem = this.getMemoryInfo();
-            const mainWindow = (0, window_1.getMainWindow)();
+            const mainWindow = getMainWindow();
             if (mainWindow) {
                 mainWindow.webContents.send('memory-info-updated', mem);
             }
             return { success: true, mode };
         });
-        electron_1.ipcMain.on('window-visibility-changed', (_event, hidden) => {
+        ipcMain.on('window-visibility-changed', (_event, hidden) => {
             this.isWindowHidden = hidden;
             this.restartInterval();
         });
@@ -43,12 +37,12 @@ class MemoryService {
         const interval = this.isWindowHidden ? 10000 : 2000;
         this.intervalId = setInterval(() => {
             const mem = this.getMemoryInfo();
-            const mainWindow = (0, window_1.getMainWindow)();
+            const mainWindow = getMainWindow();
             if (mainWindow) {
                 mainWindow.webContents.send('memory-info-updated', mem);
             }
             this.getProcessList().then(list => {
-                const mainWindow = (0, window_1.getMainWindow)();
+                const mainWindow = getMainWindow();
                 if (mainWindow) {
                     mainWindow.webContents.send('process-list-updated', list);
                 }
@@ -56,8 +50,8 @@ class MemoryService {
         }, interval);
     }
     getMemoryInfo() {
-        const total = os_1.default.totalmem();
-        const free = os_1.default.freemem();
+        const total = os.totalmem();
+        const free = os.freemem();
         const used = total - free;
         const usedPercent = Math.round((used / total) * 100);
         const freePercent = 100 - usedPercent;
@@ -71,7 +65,7 @@ class MemoryService {
     }
     async getProcessList() {
         try {
-            const list = await (0, ps_list_1.default)();
+            const list = await psList();
             const top = list
                 .map(p => {
                 // Cast as any to safely access potential memory properties that vary by OS/version
@@ -93,5 +87,4 @@ class MemoryService {
         }
     }
 }
-exports.MemoryService = MemoryService;
 //# sourceMappingURL=memory.js.map

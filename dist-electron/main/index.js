@@ -1,29 +1,22 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = void 0;
-const electron_1 = require("electron");
-Object.defineProperty(exports, "app", { enumerable: true, get: function () { return electron_1.app; } });
-const path_1 = __importDefault(require("path"));
-const dotenv_1 = require("dotenv");
-const ipc_1 = require("../shared/ipc");
-const memory_1 = require("./services/memory");
-const window_1 = require("./window");
-(0, dotenv_1.config)();
+import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron';
+import path from 'path';
+import { config } from 'dotenv';
+import { CHANNELS } from '../shared/ipc';
+import { MemoryService } from './services/memory';
+import { setMainWindow, getMainWindow } from './window';
+config();
 let isAppVisible = true;
 let isMinimized = false;
 // Initialize memory service
-const memoryService = new memory_1.MemoryService();
+const memoryService = new MemoryService();
 // Single instance lock
-const gotTheLock = electron_1.app.requestSingleInstanceLock();
+const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
-    electron_1.app.quit();
+    app.quit();
 }
 else {
-    electron_1.app.on('second-instance', () => {
-        const mainWindow = (0, window_1.getMainWindow)();
+    app.on('second-instance', () => {
+        const mainWindow = getMainWindow();
         if (mainWindow) {
             if (mainWindow.isMinimized())
                 mainWindow.restore();
@@ -33,23 +26,23 @@ else {
 }
 // Window management
 function createWindow() {
-    const win = new electron_1.BrowserWindow({
+    const win = new BrowserWindow({
         width: 900,
         height: 620,
         frame: false,
         transparent: false,
         resizable: false,
         webPreferences: {
-            preload: path_1.default.join(__dirname, '../preload/index.js'),
+            preload: path.join(__dirname, '../preload/index.js'),
             contextIsolation: true,
             nodeIntegration: false,
             sandbox: true,
         },
         backgroundColor: '#1a1a2e',
     });
-    (0, window_1.setMainWindow)(win);
+    setMainWindow(win);
     win.on('closed', () => {
-        (0, window_1.setMainWindow)(null);
+        setMainWindow(null);
     });
     win.on('blur', () => {
         win.blur();
@@ -70,7 +63,7 @@ function createWindow() {
         isAppVisible = false;
     });
     setInterval(() => {
-        const mainWindow = (0, window_1.getMainWindow)();
+        const mainWindow = getMainWindow();
         if (mainWindow && !mainWindow.isMinimized()) {
             isAppVisible = true;
         }
@@ -80,20 +73,20 @@ function createWindow() {
     }, 1000);
     return win;
 }
-electron_1.app.disableHardwareAcceleration();
+app.disableHardwareAcceleration();
 function startWindow() {
     const win = createWindow();
-    win.loadFile(path_1.default.join(__dirname, '../renderer/index.html'));
+    win.loadFile(path.join(__dirname, '../renderer/index.html'));
 }
-electron_1.app.whenReady().then(() => {
+app.whenReady().then(() => {
     startWindow();
-    electron_1.app.on('activate', () => {
-        if ((0, window_1.getMainWindow)() === null) {
+    app.on('activate', () => {
+        if (getMainWindow() === null) {
             createWindow();
         }
     });
-    electron_1.globalShortcut.register('CommandOrControl+Shift+M', () => {
-        const mainWindow = (0, window_1.getMainWindow)();
+    globalShortcut.register('CommandOrControl+Shift+M', () => {
+        const mainWindow = getMainWindow();
         if (mainWindow) {
             if (mainWindow.isMinimized()) {
                 mainWindow.restore();
@@ -103,14 +96,14 @@ electron_1.app.whenReady().then(() => {
             }
         }
     });
-    electron_1.globalShortcut.register('CommandOrControl+Shift+X', () => {
-        (0, window_1.getMainWindow)()?.close();
+    globalShortcut.register('CommandOrControl+Shift+X', () => {
+        getMainWindow()?.close();
     });
-    electron_1.ipcMain.handle(ipc_1.CHANNELS.WINDOW_SET_BOUNDS, (_event, bounds) => {
-        (0, window_1.getMainWindow)()?.setBounds(bounds);
+    ipcMain.handle(CHANNELS.WINDOW_SET_BOUNDS, (_event, bounds) => {
+        getMainWindow()?.setBounds(bounds);
     });
-    electron_1.ipcMain.handle(ipc_1.CHANNELS.WINDOW_SET_MINIMIZED, (_event, minimized) => {
-        const mainWindow = (0, window_1.getMainWindow)();
+    ipcMain.handle(CHANNELS.WINDOW_SET_MINIMIZED, (_event, minimized) => {
+        const mainWindow = getMainWindow();
         if (mainWindow) {
             if (minimized) {
                 mainWindow.minimize();
@@ -122,8 +115,8 @@ electron_1.app.whenReady().then(() => {
             }
         }
     });
-    electron_1.ipcMain.handle(ipc_1.CHANNELS.WINDOW_SET_MAXIMIZED, (_event, maximized) => {
-        const mainWindow = (0, window_1.getMainWindow)();
+    ipcMain.handle(CHANNELS.WINDOW_SET_MAXIMIZED, (_event, maximized) => {
+        const mainWindow = getMainWindow();
         if (mainWindow) {
             if (maximized) {
                 mainWindow.maximize();
@@ -133,16 +126,17 @@ electron_1.app.whenReady().then(() => {
             }
         }
     });
-    electron_1.ipcMain.handle(ipc_1.CHANNELS.WINDOW_IS_MINIMIZED, (_event) => {
+    ipcMain.handle(CHANNELS.WINDOW_IS_MINIMIZED, (_event) => {
         return isMinimized;
     });
 });
-electron_1.app.on('will-quit', () => {
-    electron_1.globalShortcut.unregisterAll();
+app.on('will-quit', () => {
+    globalShortcut.unregisterAll();
 });
-electron_1.app.on('window-all-closed', () => {
+app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        electron_1.app.quit();
+        app.quit();
     }
 });
+export { app };
 //# sourceMappingURL=index.js.map

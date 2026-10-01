@@ -17,6 +17,7 @@ const compileMain = spawn('npx', [
   'tsc',
   '-p', 'tsconfig.json',
   '--outDir', 'dist-electron',
+  '--module', 'esnext',
   '--sourceMap',
   '--declaration',
   '--esModuleInterop',

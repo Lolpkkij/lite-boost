@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CHANNELS = void 0;
 // IPC Channel Names
-exports.CHANNELS = {
+export const CHANNELS = {
     // Memory channels
     MEMORY_INFO: 'memory:info',
     MEMORY_TRIM: 'memory:trim',
